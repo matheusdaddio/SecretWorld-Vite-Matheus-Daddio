@@ -1,6 +1,6 @@
 import "./GameOver.css";
 
-const GameOver = ({ retry, score }) => {
+const GameOver = ({ retry, score, pickedWord }) => {
   const highScore = localStorage.getItem("highscore") || 0;
 
   return (
@@ -11,6 +11,9 @@ const GameOver = ({ retry, score }) => {
       </p>
       <p>
         Pontuação Máxima: <span>{highScore}</span> 👑
+      </p>
+      <p>
+        A palavra correta era: <span className="correct-word">{pickedWord}</span>
       </p>
       <button onClick={retry}>Tentar Novamente 🔄</button>
     </div>

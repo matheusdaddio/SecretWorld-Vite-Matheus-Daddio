@@ -31,67 +31,78 @@ function App() {
   const [score, setScore] = useState(0);
   const [difficulty, setDifficulty] = useState("easy");
 
+  // Função que busca uma palavra aleatória da API ou usa fallback local
   const fetchRandomWord = async () => {
     try {
       const response = await fetch("https://api.dicionario-aberto.net/random");
       const data = await response.json();
-      const word = data.entry.form.representation;
 
-  
-      // categoria opcional (se quiser manter o conceito)
-      const categories = ["carro", "fruta", "corpo", "computador", "programação", "alimento"];
-      const category = categories[Math.floor(Math.random() * categories.length)];
-  
+      // Tentativas de pegar a palavra em diferentes formatos possíveis
+      const word =
+        data?.entry?.form?.representation ||
+        data?.entry?.orth ||
+        data?.form?.representation ||
+        data?.form ||
+        data?.word ||
+        null;
+
+      if (!word || typeof word !== "string") {
+        throw new Error("Palavra inválida retornada pela API");
+      }
+
+      const category = "aleatório - api";
       return { word, category };
     } catch (error) {
-      console.error("Erro ao buscar palavra da API:", error);
-  
-      // fallback se a API falhar
+      console.warn("⚠️ Falha ao buscar palavra da API, usando fallback local:", error);
+
+      // Fallback se a API falhar
       const categories = Object.keys(wordsList);
       const category = categories[Math.floor(Math.random() * categories.length)];
-      const word = wordsList[category][Math.floor(Math.random() * wordsList[category].length)];
+      const word =
+        wordsList[category][
+          Math.floor(Math.random() * wordsList[category].length)
+        ];
       return { word, category };
     }
   };
-  
 
-  // inicia o jogo pela primeira vez
-  // inicia o jogo pela primeira vez
-const startGame = useCallback(async (selectedDifficulty) => {
-  setDifficulty(selectedDifficulty);
-  setGuessedLetters([]);
-  setWrongLetters([]);
+  // Inicia o jogo
+  const startGame = useCallback(async (selectedDifficulty) => {
+    setDifficulty(selectedDifficulty);
+    setGuessedLetters([]);
+    setWrongLetters([]);
 
-  const { category, word } = await fetchRandomWord();
-  const wordLetters = word.split("").map((l) => l.toLowerCase());
+    const { category, word } = await fetchRandomWord();
+    const wordLetters = word.split("").map((l) => l.toLowerCase());
 
-  setPickedCategory(category);
-  setPickedWord(word);
-  setLetters(wordLetters);
+    setPickedCategory(category);
+    setPickedWord(word);
+    setLetters(wordLetters);
 
-  // define as vidas iniciais conforme dificuldade
-  if (selectedDifficulty === "easy") {
-    setGuesses(5);
-  } else if (selectedDifficulty === "hard") {
-    setGuesses(3);
-  }
+    // Define vidas conforme dificuldade
+    if (selectedDifficulty === "easy") {
+      setGuesses(5);
+    } else if (selectedDifficulty === "hard") {
+      setGuesses(3);
+    }
 
-  setGameStage(stages[1].name);
-}, [fetchRandomWord]);
+    setGameStage(stages[1].name);
+  }, []);
 
-// avança para próxima palavra (sem resetar tudo)
-const nextWord = useCallback(async () => {
-  setGuessedLetters([]);
-  setWrongLetters([]);
+  // Pega próxima palavra sem reiniciar tudo
+  const nextWord = useCallback(async () => {
+    setGuessedLetters([]);
+    setWrongLetters([]);
 
-  const { word, category } = await fetchRandomWord();
-  const wordLetters = word.split("").map((l) => l.toLowerCase());
+    const { word, category } = await fetchRandomWord();
+    const wordLetters = word.split("").map((l) => l.toLowerCase());
 
-  setPickedCategory(category);
-  setPickedWord(word);
-  setLetters(wordLetters);
-}, [fetchRandomWord]);
+    setPickedCategory(category);
+    setPickedWord(word);
+    setLetters(wordLetters);
+  }, []);
 
+  // Verifica letra escolhida
   const verifyLetter = (letter) => {
     const normalizedLetter = letter.toLowerCase();
 
@@ -116,13 +127,14 @@ const nextWord = useCallback(async () => {
     }
   };
 
+  // Reinicia o jogo
   const retry = () => {
     setScore(0);
     setGuesses(5);
     setGameStage(stages[0].name);
   };
 
-  // derrota
+  // Derrota
   useEffect(() => {
     if (guesses === 0) {
       const currentHighScore = parseInt(localStorage.getItem("highscore")) || 0;
@@ -137,13 +149,13 @@ const nextWord = useCallback(async () => {
     }
   }, [guesses, score]);
 
-  // vitória (vai pra próxima palavra)
+  // Vitória → próxima palavra
   useEffect(() => {
     const uniqueLetters = [...new Set(letters)];
 
     if (letters.length > 0 && guessedLetters.length === uniqueLetters.length) {
       setScore((actualScore) => actualScore + 100);
-      nextWord(); // muda a palavra mantendo as vidas
+      nextWord();
     }
   }, [guessedLetters, letters, nextWord]);
 
@@ -162,7 +174,7 @@ const nextWord = useCallback(async () => {
           score={score}
         />
       )}
-      {gameStage === "end" && <GameOver retry={retry} score={score} />}
+      {gameStage === "end" && (<GameOver retry={retry} score={score} pickedWord={pickedWord} />)}
     </div>
   );
 }
