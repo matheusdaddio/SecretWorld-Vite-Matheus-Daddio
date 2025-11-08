@@ -1,0 +1,164 @@
+.game h1 {
+    font-size: 2.5em;
+  }
+  
+  .points span {
+    font-weight: bold;
+  }
+  
+  .tip span {
+    color: #ecfa00;
+  }
+  
+  .wordContainer {
+    margin: 0.5em;
+    padding: 1.5em;
+    border: 20px solid #ecfa00;
+    display: flex;
+  }
+  
+  .letter,
+  .blankSquare {
+    font-size: 70px;
+    line-height: 1.5;
+    border: 3px solid #000;
+    height: 100px;
+    width: 100px;
+    text-transform: uppercase;
+    background-color: #fff;
+    color: #000;
+    font-weight: bold;
+  }
+  
+  .letterContainer p {
+    margin-bottom: 1.2em;
+  }
+  
+  .letterContainer form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .letterContainer input {
+    height: 50px;
+    width: 50px;
+    font-size: 2em;
+    text-align: center;
+    margin-right: 1em;
+  }  
+
+  .virtualKeyboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(35px, 1fr));
+    gap: 6px;
+    max-width: 540px;
+    margin: 20px auto 0;
+  }
+  
+  .virtualKeyboard button {
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    background-color: grey;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.2s;
+  }
+  
+  .virtualKeyboard button:hover:not(:disabled) {
+    background-color: #ffcc80;
+  }
+  
+  .virtualKeyboard button.guessed {
+    background-color: #8bc34a;
+    color: white;
+    cursor: default;
+  }
+  
+  .virtualKeyboard button.wrong {
+    background-color: #e57373;
+    color: white;
+    cursor: default;
+  }
+  
+  @media (max-width: 600px) {
+    .virtualKeyboard {
+      grid-template-columns: repeat(7, 1fr);
+    }
+  }
+  
+  /* 🟨 CONTAINER GERAL: palavra + painel lateral */
+.mainGameArea {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.wordArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 🧩 PAINEL DE LETRAS USADAS */
+.usedLettersPanel {
+  position: absolute;
+  border: 3px solid #ecfa00;
+  right: 200px;
+  bottom: 50px;
+  border-radius: 10px;
+  padding: 15px;
+  min-width: 150px;
+  background-color: #0b1d6d;
+  color: white;
+  text-align: center;
+}
+
+.usedLettersPanel h3 {
+  margin-bottom: 10px;
+  color: #ecfa00;
+}
+
+.usedLettersBox {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.usedLettersBox span {
+  font-weight: bold;
+  border-radius: 6px;
+  padding: 3px;
+  font-size: 1.1em;
+}
+
+.usedLettersBox .usedCorrect {
+  background-color: #4caf50;
+  color: white;
+}
+
+.usedLettersBox .usedWrong {
+  background-color: #e53935;
+  color: white;
+}
+
+/* Responsivo */
+@media (max-width: 700px) {
+  .mainGameArea {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .usedLettersPanel {
+    min-width: auto;
+    width: 80%;
+  }
+}
+
+
+  
